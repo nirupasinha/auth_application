@@ -3,7 +3,8 @@
   let http = require('http');
   const bodyParser = require('body-parser');
   const config = require('./config')
-
+  const routes = require("./routes")
+  console.log(routes);
 
   //create the instance(2)
   let app = express();
@@ -12,7 +13,7 @@
   //middleware (4)
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: true }), );
-
+  routes.appRoutes(app);
 
   //Spinning server to listen on port and host (3)
   http.listen(config.port, config.host, () => {

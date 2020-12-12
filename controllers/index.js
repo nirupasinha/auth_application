@@ -1,5 +1,4 @@
 module.exports = {
-    registration: {
+    auth: require("./authControllers")
 
-    }
 }
