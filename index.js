@@ -4,7 +4,7 @@
   const bodyParser = require('body-parser');
   const config = require('./config')
   const routes = require("./routes")
-  console.log(routes);
+
 
   //create the instance(2)
   let app = express();
