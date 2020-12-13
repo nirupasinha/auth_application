@@ -5,14 +5,15 @@ const mongoose = require('mongoose');
 let userSchema = mongoose.Schema;
 let SomeModelSchema = new userSchema({
     id: {
-        type: unique,
+        type: String,
+        required: true
     },
     name: {
-        type: string,
+        type: String,
 
     },
     phone: {
-        type: string,
+        type: String,
     },
 
     email: {
