@@ -31,9 +31,18 @@ module.exports = {
     mongoInsert: insertDocument
 } */
 module.exports = {
+    checkEmail: (userObject, callback) => {
+        console.log(userObject.email)
+        UserModel.findOne({ email: userObject.email }, function(err, existingUser) {
+            /* err = new Error("mongodb error")
+            console.log("error in check mail", err)
+            console.log("existening user data", existingUser); */
+            callback(err, existingUser)
+        })
+    },
     insertDocument: (userObject, callback) => { //
-        // console.log(callback)
         const userData = new UserModel(userObject) //creating userData instance by passing userObject in userModel
+
         userData.save((err, dbData) => {
             if (err) {
                 console.log("error in registration", err);
@@ -44,11 +53,11 @@ module.exports = {
             callback(err, dbData) //callback execution
         });
     },
-    //login operation
+
     getUserLoginDetails: (userLoginObject, callback) => {
         //const userLoginData = new UserModel(userLoginObject)
         rerEmail = userLoginObject.email;
-        // console.log("+_+_+_+_", userLoginData, rerEmail);
+
         UserModel.findOne({ email: rerEmail },
             (err, username) => {
                 if (err) {
@@ -58,6 +67,18 @@ module.exports = {
                 }
                 callback(err, username) //callback execution
             });
+    },
+
+    getUserDetails: (userDetails, callback) => {
+        reqEmail = userDetails.email;
+        UserModel.find({ email: reqEmail }, (err, userDetails) => {
+            if (err) {
+                console.log("email is not matched", err);
+            } else {
+                console.log("User Details", userDetails);
+            }
+            callback(err, userDetails)
+        });
     }
 
 }
