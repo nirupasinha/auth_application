@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const UserModel = require('../models/usersModel');
+const AnimalModel = require('../models/animalsModel');
 
 function mongoConnection() {
     mongoose.connect('mongodb+srv://nirupa:sinha@cluster0.fgk4y.mongodb.net/authDatabase?retryWrites=true&w=majority', {
@@ -36,7 +37,8 @@ module.exports = {
         UserModel.findOne({ email: userObject.email }, function(err, existingUser) {
             /* err = new Error("mongodb error")
             console.log("error in check mail", err)
-            console.log("existening user data", existingUser); */
+            console.log("existing user 
+            data", existingUser); */
             callback(err, existingUser)
         })
     },
@@ -53,11 +55,25 @@ module.exports = {
             callback(err, dbData) //callback execution
         });
     },
+    insertAnimalDocuments: (userObject, callback) => { //
+        const userData = new AnimalModel(userObject) //creating userData instance by passing userObject in userModel
+
+        userData.save((err, dbData) => {
+            if (err) {
+                console.log("error in registration", err);
+
+            } else {
+                console.log("user details", dbData);
+            }
+            callback(err, dbData) //callback execution
+        });
+    },
+
 
     getUserLoginDetails: (userLoginObject, callback) => {
         //const userLoginData = new UserModel(userLoginObject)
         rerEmail = userLoginObject.email;
-
+        populate('animals')
         UserModel.findOne({ email: rerEmail },
             (err, username) => {
                 if (err) {
@@ -79,6 +95,40 @@ module.exports = {
             }
             callback(err, userDetails)
         });
+    },
+    updateUserProfile: (filter, update, callback) => {
+        try {
+            UserModel.findOneAndUpdate(filter, update, { new: true }, (err, dbData) => {
+                if (err) {
+                    console.log("error in update", err);
+
+                } else {
+                    console.log("user details", dbData);
+                }
+                callback(err, dbData);
+                console
+            });
+        } catch (err) {
+            console.log(err, "error in findOneAndUpdate method")
+        }
+
+    },
+    updateAnimalProfile: (filter, update, callback) => {
+        try {
+            UserModel.findOneAndUpdate(filter, update, { new: true }, (err, dbData) => {
+                if (err) {
+                    console.log("error in update", err);
+
+                } else {
+                    console.log("user details", dbData);
+                }
+                callback(err, dbData);
+                console
+            });
+        } catch (err) {
+            console.log(err, "error in findOneAndUpdate method")
+        }
+
     }
 
 }

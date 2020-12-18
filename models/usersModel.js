@@ -5,23 +5,31 @@ const mongoose = require('mongoose');
 let userSchema = mongoose.Schema;
 let SomeModelSchema = new userSchema({
     id: {
-        type: String,
-        required: true
+        type: Number,
+        unique: true,
+
     },
     name: {
         type: String,
 
     },
     phone: {
-        type: String,
+        type: Number,
+
     },
 
     email: {
         type: String,
         required: true,
-
+        unique: true,
     },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
+    animals: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "animalModel"
+        }
+
+    ]
 })
 let UserModel = mongoose.model('UserModel', SomeModelSchema);
 module.exports = UserModel;
