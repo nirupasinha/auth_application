@@ -1,91 +1,19 @@
-const { checkEmail } = require("../utils/dbHelper");
 const db = require("../utils/dbHelper")
+const { User } = require('../models');
 
 module.exports = {
     details: (req, res) => {
         const userLogin = req.body;
-        db.getUserDetails(userLogin, function userDetails(err, userDetails) {
+        db.getUserDetails(User, userLogin, function userDetails(err, dbData) {
             if (err) {
-                res.status(500).json({
-                    status: 'error',
-                    ok: true,
-                    code: 400,
-                    message: '',
-                    result: {
-                        err
-                    },
-                });
+                let message = `error...`;
+                return handler.responseHandler(res, 500, err, message, dbData)
             } else {
-                res.status(500).json({
-                    status: 'success',
-                    ok: true,
-                    code: 200,
-                    message: 'User Details',
-                    result: {
-                        userDetails
-                    },
-                });
+                let message = ``;
+                return handler.responseHandler(res, 500, err, message, dbData)
             }
         })
     },
-    /*    updateProfile: (req, res) => {
-           const userObject = req.body;
-           db.checkEmail(userObject, function userResponse(err, existingUser) {
-               if (err) {
-                   res.status(500).json({
-                       status: 'error',
-                       ok: true,
-                       code: 400,
-                       message: err.message || "something wrong",
-                       result: {
-                           err
-                       },
-                   });
-               } else {
-                   if (userObject.id) {
-                       existingUser.id = userObject.id;
-                   }
-                   if (userObject.name) {
-                       existingUser.name = userObject.name;
-                   }
-                   if (userObject.email) {
-                       existingUser.id = userObject.email;
-                   }
-                   if (userObject.id) {
-                       existingUser.password = userObject.password;
-                   }
-                   db.insertDocument(userObject, function userResponse(err, dbData) {
-                       if (err) {
-                           res.status(500).json({
-                               status: 'error',
-                               ok: true,
-                               code: 400,
-                               message: 'error ...',
-                               result: {
-                                   err
-                               },
-                           });
-                           // res.send("error in registration", err);
-
-                       } else {
-                           res.status(200).json({
-                               status: 'success',
-                               ok: true,
-                               code: 200,
-                               message: 'User Profile Update successfully',
-                               result: {
-                                   dbData
-                               },
-                           });
-                           // res.send("user details", dbData);
-                       }
-                   })
-
-               }
-           })
-
-       }, */
-
     updateProfile: (req, res) => {
         const userObject = req.body;
         let newUserObject = new Object();
@@ -111,114 +39,57 @@ module.exports = {
             email: newUserObject.email,
             password: newUserObject.password
         };
-        db.updateUserProfile(filter, update, function userResponse(err, dbData) {
+        db.updateProfile(User, filter, update, function userResponse(err, dbData) {
             if (err) {
                 //execute when get mongo error
-                res.status(500).json({
-                    status: 'error',
-                    ok: true,
-                    code: 400,
-                    message: err.message || "something wrong",
-                    result: {
-                        err
-                    },
-                });
-
+                let message = `Update User Profile successfully`;
+                return handler.responseHandler(res, 500, err, message, dbData)
             } else if (!dbData) {
-                res.status(404).json({
-                    status: 'success',
-                    ok: true,
-                    code: 404,
-                    message: 'user does not exist in database',
-                    result: {
-                        dbData
-                    },
-                });
+                let message = `user does not exist in database`;
+                return handler.responseHandler(res, 404, err, message, dbData)
             } else {
-                res.status(200).json({
-                    status: 'success',
-                    ok: true,
-                    code: 200,
-                    message: 'Update User Profile successfully',
-                    result: {
-                        dbData
-                    },
-                });
+                let message = `Update User Profile successfully`;
+                return handler.responseHandler(res, 200, err, message, dbData)
             }
         })
 
     },
-    /* changeUserPassword: (req, res) => {
-        const userObject = req.body;
-        db.checkEmail(userObject, function userResponse(err, existingUser) {
-            if (err) {
-                //execute when get mongo error
-                res.status(500).json({
-                    status: 'error',
-                    ok: true,
-                    code: 400,
-                    message: err.message || "something wrong",
-                    result: {
-                        err
-                    },
-                });
+    /*  changeUserPassword: (req, res) => {
+         const userObject = req.body;
+         db.checkEmail(userObject, function userResponse(err, existingUser) {
+             if (err) {
+                 //execute when get mongo error
+                 let message = `error..`;
+                 return handler.responseHandler(res, 200, err, message, dbData)
 
-            } else {
-                if (userObject.password == existingUser.password) {
-                    if (userObject.newPassword == userObject.confirmPassword) {
-                        existingUser.password = userObject.newPassword;
-                        console.log(existingUser.password)
-                        console.log(userObject.newPassword)
-                        console.log(userObject)
+             } else {
+                 if (userObject.password == existingUser.password) {
+                     if (userObject.newPassword == userObject.confirmPassword) {
+                         existingUser.password = userObject.newPassword;
+                         console.log(existingUser.password)
+                         console.log(userObject.newPassword)
+                         console.log(userObject)
 
-                        db.insertDocument(existingUser, function userResponse(err, dbData) {
-                            if (err) {
-                                res.status(400).json({
-                                    status: 'error',
-                                    ok: true,
-                                    code: 400,
-                                    message: 'error ...',
-                                    result: {
-                                        err
-                                    },
-                                });
-                            } else {
-                                res.status(200).json({
-                                    status: 'success',
-                                    ok: true,
-                                    code: 200,
-                                    message: 'Password Change successfully',
-                                    result: {
-                                        dbData
-                                    },
-                                });
-                            }
-                        })
-                    } else {
-                        res.status(500).json({
-                            status: 'error',
-                            ok: true,
-                            code: 400,
-                            message: `Please entry same password`,
-                            result: {
+                         db.insertDocument(existingUser, function userResponse(err, dbData) {
+                             if (err) {
+                                 let message = `error`;
+                                 return handler.responseHandler(res, 200, err, message, dbData)
+                             } else {
+                                 let message = `Password Change successfully`;
+                                 return handler.responseHandler(res, 200, err, message, dbData)
+                             }
+                         })
+                     } else {
+                         let message = `Please entry same password`;
+                         return handler.responseHandler(res, 200, err, message, dbData)
+                     }
+                 } else {
+                     let message = `existing password does not matched`;
+                     return handler.responseHandler(res, 200, err, message, dbData)
+                 }
 
-                            },
-                        });
-                    }
-                } else {
-                    res.status(500).json({
-                        status: 'error',
-                        ok: true,
-                        code: 400,
-                        message: 'existing password does not matched',
-                        result: {
+             }
 
-                        },
-                    });
-                }
-
-            }
-
-        })
-    } */
+         })
+     } */
 }

@@ -1,5 +1,5 @@
 module.exports = {
-    auth: require("./usersModel"),
-    animal: require("./animalsModel")
+    User: require("./usersModel"),
+    Animal: require("./animalsModel")
 
 }

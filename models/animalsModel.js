@@ -12,9 +12,6 @@ let AnimalModelSchema = new animalSchema({
         type: String,
 
     },
-    email: {
-        type: String,
-    },
     type: {
         type: String,
 
@@ -25,7 +22,12 @@ let AnimalModelSchema = new animalSchema({
     age: {
         type: Number,
     },
-    color: { type: String },
+    color: {
+        type: String,
+    },
+    price: {
+        type: Number,
+    },
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "UserModel"

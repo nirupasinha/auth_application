@@ -1,75 +1,35 @@
-const { isValidObjectId } = require("mongoose");
-const { update } = require("../models/usersModel");
 const db = require("../utils/dbHelper")
-
+const { User, Animal } = require('../models');
 module.exports = {
     animalRegister: (req, res) => {
         const animalObject = req.body;
-        db.insertAnimalDocuments(animalObject, function userResponse(err, dbData) {
+        db.insertDocument(Animal, animalObject, function userResponse(err, dbData) {
             if (err) {
-                res.status(500).json({
-                    status: 'error',
-                    ok: true,
-                    code: 400,
-                    message: 'error ...',
-                    result: {
-                        err
-                    },
-                });
+                let message = `error...`;
+                return handler.responseHandler(res, 500, err, message, dbData)
             } else if (dbData !== null) {
-                console.log(`=====+++=====`, dbData)
                 let filter = { email: animalObject.email }
                 let update = {
                     $push: {
                         animals: dbData._id
                     }
                 }
-
-                db.updateUserProfile(filter, update, function userResponse(err, dbData) {
+                db.updateProfile(User, filter, update, function userResponse(err, dbData) {
                     if (err) {
                         //execute when get mongo error
-                        res.status(500).json({
-                            status: 'error',
-                            ok: true,
-                            code: 400,
-                            message: err.message || "something wrong",
-                            result: {
-                                err
-                            },
-                        });
-
+                        let message = `error...`;
+                        return handler.responseHandler(res, 400, err, message, dbData)
                     } else if (!dbData) {
-                        res.status(404).json({
-                            status: 'success',
-                            ok: true,
-                            code: 404,
-                            message: 'user does not exist in database',
-                            result: {
-                                dbData
-                            },
-                        });
+                        let message = `user does not exist in database`;
+                        return handler.responseHandler(res, 404, err, message, dbData)
                     } else {
-                        res.status(200).json({
-                            status: 'success',
-                            ok: true,
-                            code: 200,
-                            message: 'Update User Profile successfully',
-                            result: {
-                                dbData
-                            },
-                        });
+                        let message = `Update User Profile successfully`;
+                        return handler.responseHandler(res, 200, err, message, dbData)
                     }
                 })
             } else {
-                res.status(200).json({
-                    status: 'success',
-                    ok: true,
-                    code: 200,
-                    message: 'animal register successfully',
-                    result: {
-                        dbData
-                    },
-                });
+                let message = `animal register successfully`;
+                return handler.responseHandler(res, 200, err, message, dbData)
             }
         });
 
@@ -109,39 +69,17 @@ module.exports = {
             age: newUserObject.age,
             color: newUserObject.color
         };
-        db.updateUserProfile(filter, update, function userResponse(err, dbData) {
+        db.updateProfile(Animal, filter, update, function userResponse(err, dbData) {
             if (err) {
                 //execute when get mongo error
-                res.status(500).json({
-                    status: 'error',
-                    ok: true,
-                    code: 400,
-                    message: err.message || "something wrong",
-                    result: {
-                        err
-                    },
-                });
-
+                let message = `error... `;
+                return handler.responseHandler(res, 500, err, message, dbData)
             } else if (!dbData) {
-                res.status(404).json({
-                    status: 'success',
-                    ok: true,
-                    code: 404,
-                    message: 'user does not exist in database',
-                    result: {
-                        dbData
-                    },
-                });
+                let message = `animal does not exist in database`;
+                return handler.responseHandler(res, 404, err, message, dbData)
             } else {
-                res.status(200).json({
-                    status: 'success',
-                    ok: true,
-                    code: 200,
-                    message: 'Update User Profile successfully',
-                    result: {
-                        dbData
-                    },
-                });
+                let message = `Update animal Profile successfully`;
+                return handler.responseHandler(res, 200, err, message, dbData)
             }
         })
 
