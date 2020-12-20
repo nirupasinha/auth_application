@@ -1,5 +1,6 @@
 const db = require("../utils/dbHelper")
 const { User, Animal } = require('../models');
+const handler = require("../responseHandler")
 module.exports = {
     animalRegister: (req, res) => {
         const animalObject = req.body;
@@ -34,7 +35,8 @@ module.exports = {
         });
 
     },
-    animalUpdate: (req, res) => {
+
+    /* animalUpdate: (req, res) => {
         const userObject = req.body;
         let newUserObject = new Object();
         if (userObject.id && userObject.id > 0) {
@@ -83,6 +85,17 @@ module.exports = {
             }
         })
 
+    },
+ */
+    animalUpdate: (req, res) => {
+        db.highestPrice(Animal, function userResponse(err, dbData) {
+            if (err) {
+                let message = `internal error`;
+                return handler.responseHandler(res, 400, err, message, dbData)
+            } else {
+                let message = `Highest Price Animal`;
+                return handler.responseHandler(res, 200, err, message, dbData)
+            }
+        })
     }
-
 }

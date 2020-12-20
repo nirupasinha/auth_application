@@ -100,4 +100,14 @@ module.exports = {
         }
 
     },
+    highestPrice: (Model, callback) => {
+        Model.find({}).sort({ price: -1 }).limit(1).exec(function(err, dbData) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log("Highest Price Animal", dbData);
+            }
+            callback(err, dbData)
+        })
+    },
 }

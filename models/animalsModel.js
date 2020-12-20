@@ -20,7 +20,7 @@ let AnimalModelSchema = new animalSchema({
         type: String,
     },
     age: {
-        type: Number,
+        type: String,
     },
     color: {
         type: String,
