@@ -4,15 +4,18 @@ const handler = require("../responseHandler")
 
 module.exports = {
     details: (req, res) => {
-        const userLogin = req.body;
-        db.getUserDetails(User, userLogin, function userDetails(err, dbData) {
-            if (err) {
-                let message = `error...`;
-                return handler.responseHandler(res, 500, err, message, dbData)
+        const userObject = req.body;
+        db.getUserDetails(User, userObject).then(function successResponse(dbData) {
+            if (!dbData) {
+                let message = `User does not exist`;
+                return handler.responseHandler(res, 500, message, dbData)
             } else {
-                let message = ``;
-                return handler.responseHandler(res, 500, err, message, dbData)
+                let message = `User Details find Successfully`;
+                return handler.responseHandler(res, 500, message, dbData)
             }
+        }).catch(function errorResponse(err) {
+            let message = `e`;
+            return handler.responseHandler(res, 500, err, message)
         })
     },
     updateProfile: (req, res) => {
@@ -40,18 +43,17 @@ module.exports = {
             email: newUserObject.email,
             password: newUserObject.password
         };
-        db.updateProfile(User, filter, update, function userResponse(err, dbData) {
-            if (err) {
-                //execute when get mongo error
-                let message = `Update User Profile successfully`;
-                return handler.responseHandler(res, 500, err, message, dbData)
-            } else if (!dbData) {
+        db.updateProfile(User, filter, update).then(function successResponse(dbData) {
+            if (!dbData) {
                 let message = `user does not exist in database`;
                 return handler.responseHandler(res, 404, err, message, dbData)
             } else {
                 let message = `Update User Profile successfully`;
                 return handler.responseHandler(res, 200, err, message, dbData)
             }
+        }).catch(function errorFunction(err) {
+            let message = `error...`;
+            return handler.responseHandler(res, 500, message, err)
         })
 
     },

@@ -1,4 +1,5 @@
-function responseHandler(res, statusCode, err, msg, data) {
+function responseHandler(res, statusCode, msg, err, data) {
+    console.log(data);
     if (err) {
         res.status(statusCode).json({
             status: 'error',

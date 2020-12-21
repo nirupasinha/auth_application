@@ -3,35 +3,34 @@ const { User, Animal } = require('../models');
 const handler = require("../responseHandler")
 module.exports = {
     animalRegister: (req, res) => {
-        const animalObject = req.body;
-        db.insertDocument(Animal, animalObject, function userResponse(err, dbData) {
-            if (err) {
-                let message = `error...`;
-                return handler.responseHandler(res, 500, err, message, dbData)
-            } else if (dbData !== null) {
+        const userObject = req.body;
+        db.insertDocument(Animal, userObject).then(function successResponse(dbData) {
+            if (dbData !== null) {
                 let filter = { email: animalObject.email }
                 let update = {
                     $push: {
                         animals: dbData._id
                     }
                 }
-                db.updateProfile(User, filter, update, function userResponse(err, dbData) {
-                    if (err) {
-                        //execute when get mongo error
-                        let message = `error...`;
-                        return handler.responseHandler(res, 400, err, message, dbData)
-                    } else if (!dbData) {
+                db.updateProfile(User, filter, update).then(function successResponse(dbData) {
+                    if (!dbData) {
                         let message = `user does not exist in database`;
-                        return handler.responseHandler(res, 404, err, message, dbData)
+                        return handler.responseHandler(res, 404, message, dbData)
                     } else {
                         let message = `Update User Profile successfully`;
-                        return handler.responseHandler(res, 200, err, message, dbData)
+                        return handler.responseHandler(res, 200, message, dbData)
                     }
+                }).catch(function errorResponse(err) {
+                    let message = `error...`;
+                    return handler.responseHandler(res, 400, err, message)
                 })
             } else {
                 let message = `animal register successfully`;
-                return handler.responseHandler(res, 200, err, message, dbData)
+                return handler.responseHandler(res, 200, message, dbData)
             }
+        }).catch(function errorResponse(err) {
+            let message = `error...`;
+            return handler.responseHandler(res, 500, err, message)
         });
 
     },
@@ -88,14 +87,12 @@ module.exports = {
     },
  */
     animalUpdate: (req, res) => {
-        db.highestPrice(Animal, function userResponse(err, dbData) {
-            if (err) {
-                let message = `internal error`;
-                return handler.responseHandler(res, 400, err, message, dbData)
-            } else {
-                let message = `Highest Price Animal`;
-                return handler.responseHandler(res, 200, err, message, dbData)
-            }
+        db.highestPrice(Animal).then(function successResponse(dbData) {
+            let message = `Highest Price Animal`;
+            return handler.responseHandler(res, 200, message, dbData)
+        }).catch(function errorResponse(err) {
+            let message = `internal error`;
+            return handler.responseHandler(res, 400, err, message)
         })
     }
 }

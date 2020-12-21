@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 function mongoConnection() {
     mongoose.connect('mongodb+srv://nirupa:sinha@cluster0.fgk4y.mongodb.net/authDatabase?retryWrites=true&w=majority', {
         useNewUrlParser: true,
@@ -15,99 +14,86 @@ function mongoConnection() {
 
 mongoConnection()
 
-/* function insertDocument(userObject) {
-    const userData = new UserModel(userObject) //creating userData instance by passing userObject in userModel
-    userData.save((err, userData) => {
-        if (err) {
-            console.log("error in registration", err);
-
-        } else {
-            console.log("user details", userData);
-        }
-
-    });
-}
 module.exports = {
-    mongoInsert: insertDocument
-} */
-module.exports = {
-    checkEmail: (Model, userObject, callback) => {
-        Model.findOne({ email: userObject.email }, function(err, existingUser) {
-            /* err = new Error("mongodb error")
-            console.log("error in check mail", err)
-            console.log("existing user 
-            data", existingUser); */
-            callback(err, existingUser)
+    checkEmail: (Model, userObject) => {
+        return new Promise(function(resolve, reject) {
+            Model.findOne({ email: userObject.email }, function(err, dbData) {
+                if (!err) {
+                    resolve(dbData)
+                    console.log("check mail", dbData);
+                } else {
+                    reject(err)
+                }
+            })
+        })
+
+    },
+    insertDocument: (Model, userObject) => {
+        const dataModel = new Model(userObject)
+        return new Promise(function(resolve, reject) {
+            dataModel.save((err, dbData) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(dbData)
+                    console.log("insert data", dbData);
+                }
+            })
         })
     },
-    insertDocument: (Model, userObject, callback) => { //
-        const dataModel = new Model(userObject) //creating userData instance by passing userObject in userModel
-        dataModel.save((err, dbData) => {
-            if (err) {
-                console.log("error in registration", err);
-
-            } else {
-                console.log("user details", dbData);
-            }
-            callback(err, dbData) //callback execution
-        });
+    getUserLoginDetails: (Model, userObject) => {
+        return new Promise(function(resolve, reject) {
+            Model.findOne({ email: userObject.email },
+                (err, dbData) => {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(dbData)
+                    }
+                })
+        })
     },
-
-
-    getUserLoginDetails: (Model, userLoginObject, callback) => {
-        //const userLoginData = new UserModel(userLoginObject)
-        rerEmail = userLoginObject.email;
-        Model.findOne({ email: rerEmail },
-            (err, username) => {
+    getUserDetails: (Model, userObject) => {
+        return new Promise(function(resolve, reject) {
+            Model.find({ email: userObject.email }, (err, dbData) => {
                 if (err) {
-                    console.log("user is not register", err);
+                    reject(err)
                 } else {
-                    console.log("user is exist", username);
+                    resolve(dbData)
                 }
-                callback(err, username) //callback execution
-            });
-    },
-
-    getUserDetails: (Model, userDetails, callback) => {
-        reqEmail = userDetails.email;
-        Model.find({ email: reqEmail }, (err, userDetails) => {
-                if (err) {
-                    console.log("email is not matched", err);
-                } else {
-                    console.log("User Details", userDetails);
-                }
-                callback(err, userDetails)
             }).populate('animals')
-            /* .populate('animals').exec((err, data) => {
-                console.log("Populated User " + data)
-            }) */
-            // 
+        })
     },
-    updateProfile: (Model, filter, update, callback) => {
+    updateProfile: (Model, filter, update) => {
         try {
-            Model.findOneAndUpdate(filter, update, { new: true }, (err, dbData) => {
-                if (err) {
-                    console.log("error in update", err);
-
-                } else {
-                    console.log("user details", dbData);
-                }
-                callback(err, dbData);
-                console
-            });
+            return new Promise(function(resolve, reject) {
+                Model.findOneAndUpdate(filter, update, { new: true }, (err, dbData) => {
+                    if (!err) {
+                        resolve(dbData)
+                    } else {
+                        reject(err)
+                    }
+                })
+            })
         } catch (err) {
             console.log(err, "error in findOneAndUpdate method")
         }
+    },
 
-    },
-    highestPrice: (Model, callback) => {
-        Model.find({}).sort({ price: -1 }).limit(1).exec(function(err, dbData) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log("Highest Price Animal", dbData);
-            }
-            callback(err, dbData)
-        })
-    },
+    highestPrice: (Model) => {
+        try {
+            return new Promise(function(resolve, reject) {
+                Model.find({}).sort({ price: -1 }).limit(1).exec(function(err, dbData) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(dbData)
+                    }
+                })
+            })
+        } catch (err) {
+            console.log(err, "error in find method")
+        }
+
+    }
 }
