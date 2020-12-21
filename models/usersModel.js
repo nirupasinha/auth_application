@@ -1,6 +1,5 @@
 //Require Mongoose
 const mongoose = require('mongoose');
-//const bcrypt = require('bcrypt.js')
 
 //Define a schema
 let userSchema = mongoose.Schema;
@@ -32,5 +31,6 @@ let SomeModelSchema = new userSchema({
 
     ]
 })
+
 let UserModel = mongoose.model('UserModel', SomeModelSchema);
 module.exports = UserModel;
