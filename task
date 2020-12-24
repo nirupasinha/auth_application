@@ -30,10 +30,14 @@
 2.make function generic
 3.make responseHandler File4
 4.add two extra field price and age in animal model :-1) according to breed of animal find highest price animal is animal database Collection, 2)find highest price animal in database
-//Task-19
+//Task-19(20-12-2020)
 1.Study promise(***R.async/wait)😥😥😥😥😥😥😥😥😥😥😥
 2.library implement bcrypt
 3.Third party API call
-4.Map, reduce,filter
+4.Map, reduce,filter,JWT(json web token),forgot Password,async/wait
 Q.(prototype,closure 😂😂😂😂😂😂😂😂😂😂😂😂😂
-Task-20(delay Task 19)
+Task-20(delay Task 19)(21-12-202)
+Third party API call
+Task-21(delay Task 19)(22-12-202)
+project-2
+Password Management System

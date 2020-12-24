@@ -5,17 +5,19 @@ const handler = require("../responseHandler")
 module.exports = {
     details: (req, res) => {
         const userObject = req.body;
+        console.log("=============", userObject.email);
         db.getUserDetails(User, userObject).then(function successResponse(dbData) {
             if (!dbData) {
                 let message = `User does not exist`;
-                return handler.responseHandler(res, 500, message, dbData)
+                return handler.responseHandler(res, 400, message, null, dbData)
             } else {
+                console.log("get data", dbData);
                 let message = `User Details find Successfully`;
-                return handler.responseHandler(res, 500, message, dbData)
+                return handler.responseHandler(res, 200, message, null, dbData)
             }
         }).catch(function errorResponse(err) {
             let message = `e`;
-            return handler.responseHandler(res, 500, err, message)
+            return handler.responseHandler(res, 500, message, err)
         })
     },
     updateProfile: (req, res) => {
