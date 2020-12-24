@@ -1,0 +1,12 @@
+step 1.request from postman(http://localhost:7777/api/..)
+step 2.find the route through index.js file of routes folder
+step 3.Go to the controller through index.js file of controllers
+
+============ login implementation =========
+step1. email(username) and password request for login  from postman(http://localhost:7777/api/auth/login) to the server
+step.2 find the route through index.js file of routes folder 
+step.3 and go the controller(authController.js) according to that route
+step.4 
+================== =================================
+step.1 insert animals data 
+step.2 update user :-1)find user acc to their email id, 2).and set animals field with animals mongo generated id
