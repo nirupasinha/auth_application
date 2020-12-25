@@ -1,6 +1,7 @@
 const db = require("../utils/dbHelper")
 const { User } = require('../models');
 const handler = require("../responseHandler")
+const { jwt } = require("../middleware")
 
 module.exports = {
     details: (req, res) => {
