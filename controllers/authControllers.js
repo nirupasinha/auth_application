@@ -2,7 +2,8 @@ const db = require("../utils/dbHelper");
 const handler = require("../responseHandler");
 const { User } = require("../models");
 const bcrypt = require("../utils/bcrypt");
-console.log(`===============, ${bcrypt}`)
+const { jwt } = require("../middleware");
+console.log(jwt.createJWTToken);
 module.exports = {
     register: (req, res) => {
         const userObject = req.body;
@@ -40,12 +41,21 @@ module.exports = {
 
     login: (req, res) => {
         const userObject = req.body;
+        const emailId = userObject.email;
         console.log(`request user object from postman, ${userObject}`);
         db.getUserLoginDetails(User, userObject).then(function successResponse(dbData) {
             let passwordMatched = dbData.password === userObject.password;
             if (passwordMatched == true) {
-                let message = `User Login successfully `;
-                return handler.responseHandler(res, 500, message, null, passwordMatched);
+                console.log("email id", emailId);
+                console.log("email id", jwt.createJWTToken());
+                jwt.createJWTToken(emailId).then(function successCreate(createdToken) {
+                    let message = `User Login Successfully with token created `;
+                    return handler.responseHandler(res, 500, message, null, createdToken);
+                }).catch(function errorCreateToken(err) {
+                    let message = `error in token generation`;
+                    return handler.responseHandler(res, 500, message, err);
+                });
+
             } else {
                 let message = `Password does not matched`;
                 return handler.responseHandler(res, 500, message, null, passwordMatched);
