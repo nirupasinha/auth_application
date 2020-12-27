@@ -6,5 +6,6 @@ prototype
 onblure,onfocus(event att)
 form validation
 asynchrnouns concept
-
+jwt
+Object destructing
 

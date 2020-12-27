@@ -23,6 +23,7 @@ module.exports = {
     },
     updateProfile: (req, res) => {
         const userObject = req.body;
+        console.log("user details from postman", userObject);
         let newUserObject = new Object();
         if (userObject.id && userObject.id > 0) {
             newUserObject.id = userObject.id;
@@ -46,7 +47,10 @@ module.exports = {
             email: newUserObject.email,
             password: newUserObject.password
         };
+        console.log("filter email in controller", filter);
+        console.log("update details in controller", update);
         db.updateProfile(User, filter, update).then(function successResponse(dbData) {
+            console.log("****************", dbData);
             if (!dbData) {
                 let message = `user does not exist in database`;
                 return handler.responseHandler(res, 404, err, message, dbData)

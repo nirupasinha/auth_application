@@ -65,13 +65,18 @@ module.exports = {
         })
     },
     updateProfile: (Model, filter, update) => {
+        console.log("filter email in dbHelper", filter);
+        console.log("update details in dbHelper", update);
         try {
             return new Promise(function(resolve, reject) {
                 Model.findOneAndUpdate(filter, update, { new: true }, (err, dbData) => {
+                    console.log("data after find method", dbData);
                     if (!err) {
                         resolve(dbData)
+                        console.log("update profile details", dbData);
                     } else {
                         reject(err)
+                        console.log("error in update profile", err);
                     }
                 })
             })

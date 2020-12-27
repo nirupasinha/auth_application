@@ -40,7 +40,7 @@ Task-20(delay Task 19)(21-12-202)
 Third party API call
 Task-21(delay Task 19)(22-12-202)
 project-2
-Password Management System
+Password Management System(bcrypt):-person save the password securely in this application
 event
 form validation
 

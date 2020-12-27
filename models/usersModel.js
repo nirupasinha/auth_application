@@ -23,6 +23,12 @@ let SomeModelSchema = new userSchema({
         required: true,
         unique: true,
     },
+    role: {
+        type: String,
+        default: "user",
+        required: true,
+        // enum: ["user", "admin", "superAdmin"]
+    },
     password: { type: String, required: true },
     animals: [{
             type: mongoose.Schema.Types.ObjectId,
