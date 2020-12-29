@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-function mongoConnection() {
+/* function mongoConnection() {
     mongoose.connect('mongodb+srv://nirupa:sinha@cluster0.fgk4y.mongodb.net/authDatabase?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -11,7 +11,18 @@ function mongoConnection() {
         console.log(`mongo data, ${data}`)
     });
 }
-
+ */
+function mongoConnection() {
+    mongoose.connect('mongodb://localhost:27017/authDatabase', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+        useCreateIndex: true
+    }, (err, data) => {
+        console.log(`mongo error, ${err}`)
+        console.log(`mongo data, ${data}`)
+    });
+}
 mongoConnection()
 
 module.exports = {
@@ -64,25 +75,23 @@ module.exports = {
             }).populate('animals')
         })
     },
-    updateProfile: (Model, filter, update) => {
+    updateProfile: (Model, filter, newUserObject) => {
         console.log("filter email in dbHelper", filter);
-        console.log("update details in dbHelper", update);
-        try {
-            return new Promise(function(resolve, reject) {
-                Model.findOneAndUpdate(filter, update, { new: true }, (err, dbData) => {
-                    console.log("data after find method", dbData);
-                    if (!err) {
-                        resolve(dbData)
-                        console.log("update profile details", dbData);
-                    } else {
-                        reject(err)
-                        console.log("error in update profile", err);
-                    }
-                })
+        console.log("update details in dbHelper", newUserObject);
+        return new Promise(function(resolve, reject) {
+            Model.findOneAndUpdate(filter, newUserObject, { new: true }, (err, dbData) => {
+                console.log("data after find method", dbData);
+                console.log("error after find method", err);
+                if (!err) {
+                    resolve(dbData)
+                    console.log("update profile details", dbData);
+                } else {
+                    reject(err)
+                    console.log("error in update profile", err);
+                }
             })
-        } catch (err) {
-            console.log(err, "error in findOneAndUpdate method")
-        }
+        })
+
     },
 
     highestPrice: (Model) => {
@@ -100,5 +109,20 @@ module.exports = {
             console.log(err, "error in find method")
         }
 
+    },
+    getAlluserDetails: (Model, filter) => {
+        try {
+            return new Promise(function(resolve, reject) {
+                Model.find(filter, function(err, dbData) {
+                    if (err) {
+                        reject(err)
+                    } else {
+                        resolve(dbData)
+                    }
+                })
+            })
+        } catch (err) {
+            console.log(err, "Error in find method")
+        }
     }
 }

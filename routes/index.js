@@ -5,6 +5,7 @@ module.exports = {
         app.use('/api', v1);
         v1.use('/auth', require('./authRoutes'));
         v1.use('/user', require('./usersRoutes'));
+        v1.use('/admin', require('./adminRoutes'));
         v1.use('/animal', require('./animalsRoutes'));
     }
 }

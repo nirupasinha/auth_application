@@ -37,26 +37,30 @@ module.exports = {
         if (userObject.email && userObject.email !== "") {
             newUserObject.email = userObject.email;
         }
-        if (userObject.password && userObject.password > 0) {
+        if (userObject.password && userObject.password !== "") {
             newUserObject.password = userObject.password;
         }
-        let filter = { email: newUserObject.email };
-        let update = {
-            name: newUserObject.name,
-            phone: newUserObject.phone,
-            email: newUserObject.email,
-            password: newUserObject.password
-        };
+        if (userObject.role) {
+            newUserObject.role = userObject.role;
+        }
+        console.log("user email ", req.userDetails);
+        let filter = { email: req.userDetails };
+        /*  let update = {
+             name: newUserObject.name,
+             phone: newUserObject.phone,
+             email: newUserObject.email,
+             password: newUserObject.password
+         }; */
         console.log("filter email in controller", filter);
-        console.log("update details in controller", update);
-        db.updateProfile(User, filter, update).then(function successResponse(dbData) {
+        console.log("update details in controller", newUserObject);
+        db.updateProfile(User, filter, newUserObject).then(function successResponse(dbData) {
             console.log("****************", dbData);
             if (!dbData) {
                 let message = `user does not exist in database`;
-                return handler.responseHandler(res, 404, err, message, dbData)
+                return handler.responseHandler(res, 200, message, null, dbData)
             } else {
                 let message = `Update User Profile successfully`;
-                return handler.responseHandler(res, 200, err, message, dbData)
+                return handler.responseHandler(res, 200, message, null, dbData)
             }
         }).catch(function errorFunction(err) {
             let message = `error...`;

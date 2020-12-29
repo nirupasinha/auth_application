@@ -5,9 +5,9 @@ const { JWT_PRIVATE_KEY } = require("../config/constant")
 
 //const SECRET_KEY = "JWT_SECRET";
 
-function createJWTToken(emailId) {
+function createJWTToken(emailId, userRole) {
     return new Promise(function(resolve, reject) {
-        jwt.sign({ email: emailId }, JWT_PRIVATE_KEY, {
+        jwt.sign({ email: emailId, role: userRole }, JWT_PRIVATE_KEY, {
             expiresIn: "1d"
         }, function(err, token) {
             if (!err) {
@@ -30,6 +30,10 @@ function verifyJWTToken(req, res, next) {
     return new Promise(function(resolve, reject) {
         jwt.verify(token, JWT_PRIVATE_KEY, function(err, decoded) {
             if (!err) {
+                req.userDetails = decoded.email;
+                req.userRole = decoded.role;
+                console.log("user email in jwt", req.userDetails);
+                console.log("user role in jwt", req.userRole);
                 resolve(token)
                 console.log("token decoded", decoded);
                 next(); //after middleware execution go to next level(controller)

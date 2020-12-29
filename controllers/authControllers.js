@@ -13,7 +13,7 @@ module.exports = {
                 let message = `user with email, ${dbData.email}, already exist `;
                 return handler.responseHandler(res, 400, message, null, dbData);
             } else {
-                bcrypt(userObject.password, function(err, hashedPassword) {
+                bcrypt.hashPassword(userObject.password, function(err, hashedPassword) {
                     if (err) {
                         let message = `error in email`;
                         return handler.responseHandler(res, 400, message, err);
@@ -41,26 +41,35 @@ module.exports = {
 
     login: (req, res) => {
         const userObject = req.body;
+        console.log(userObject);
         const emailId = userObject.email;
         console.log(`request user object from postman, ${userObject}`);
         db.getUserLoginDetails(User, userObject).then(function successResponse(dbData) {
-            let passwordMatched = dbData.password === userObject.password;
-            if (passwordMatched == true) {
-                console.log("email id", emailId);
-                console.log("email id", jwt.createJWTToken());
-                jwt.createJWTToken(emailId).then(function successCreate(createdToken) {
-                    let message = `User Login Successfully with token created `;
-                    return handler.responseHandler(res, 500, message, null, createdToken);
-                }).catch(function errorCreateToken(err) {
-                    let message = `error in token generation`;
-                    return handler.responseHandler(res, 500, message, err);
-                });
+            console.log("user password from database", dbData.password);
+            console.log("user password from postman", userObject.password);
+            //
+            bcrypt.comparePassword(userObject.password, dbData.password, function(err, passwordMatched) {
+                if (err) {
+                    return handler.responseHandler(res, 500, "bcrypt error", err);
+                } else {
+                    const userRole = dbData.role;
+                    if (passwordMatched == true) {
+                        console.log("email id", emailId);
+                        console.log("email id", jwt.createJWTToken());
+                        jwt.createJWTToken(emailId, userRole).then(function successCreate(createdToken) {
+                            let message = `User Login Successfully with token created `;
+                            return handler.responseHandler(res, 500, message, null, createdToken);
+                        }).catch(function errorCreateToken(err) {
+                            let message = `error in token generation`;
+                            return handler.responseHandler(res, 500, message, err);
+                        });
 
-            } else {
-                let message = `Password does not matched`;
-                return handler.responseHandler(res, 500, message, null, passwordMatched);
-            }
-
+                    } else {
+                        let message = `Password does not matched`;
+                        return handler.responseHandler(res, 500, message, null, passwordMatched);
+                    }
+                }
+            })
         }).catch(function errorResponse(err) {
             let message = `user does not exist`;
             return handler.responseHandler(res, 500, message, err);

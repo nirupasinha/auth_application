@@ -43,4 +43,5 @@ project-2
 Password Management System(bcrypt):-person save the password securely in this application
 event
 form validation
-
+Email verification 
+socket 
